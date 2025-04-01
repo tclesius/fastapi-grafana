@@ -1,0 +1,20 @@
+FROM python:3.13-slim-bookworm
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Copy the project into the image
+ADD . /app
+
+# Set the working directory
+WORKDIR /app
+
+# Sync the project into a new environment, using the frozen lockfile
+RUN uv sync --frozen
+
+# Create entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+
+# Make the script executable
+RUN chmod +x /entrypoint.sh
+
+# Run the app
+ENTRYPOINT ["/entrypoint.sh"]
